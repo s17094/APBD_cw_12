@@ -5,6 +5,8 @@
 @inject HttpClient httpClient
 
 <h3>Movies</h3>
+<a href="/movies/newmovie">Create new Movie</a>
+
 <div>
     <h3>In theaters</h3>
     <MoviesList Movies="MoviesList" />
@@ -20,7 +22,7 @@
 
     private async Task GetMovies()
     {
-        var responseHTTP = await httpClient.GetAsync("https://localhost:44311/api/movies");
+        var responseHTTP = await httpClient.GetAsync("https://localhost:5001/api/movies");
 
         if (responseHTTP.IsSuccessStatusCode)
         {

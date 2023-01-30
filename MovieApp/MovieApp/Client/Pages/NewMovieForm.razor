@@ -1,0 +1,73 @@
+﻿@page "/movies/newmovie"
+@using MovieApp.Client.Repository
+@inject NavigationManager navManager
+@inject IMovieRepository movieRepository
+@inject HttpClient httpClient
+
+<h3>New Movie Form</h3>
+<EditForm Model="NewMovie" OnValidSubmit="CreateMovie">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group">
+        <label>Title: </label>
+        <div>
+            <InputText class="form-control" @bind-Value="@NewMovie.Title" />
+            <ValidationMessage For="@(() => NewMovie.Title)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Summary: </label>
+        <div>
+            <InputText class="form-control" @bind-Value="@NewMovie.Summary"/>
+            <ValidationMessage For="@(() => NewMovie.Summary)"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>In Theaters: </label>
+        <div>
+            <InputCheckbox class="form-control" @bind-Value="@NewMovie.InTheaters"/>
+            <ValidationMessage For="@(() => NewMovie.InTheaters)"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Trailer: </label>
+        <div>
+            <InputText class="form-control" @bind-Value="@NewMovie.Trailer"/>
+            <ValidationMessage For="@(() => NewMovie.Trailer)"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Release Date: </label>
+        <div>
+            <InputDate class="form-control" @bind-Value="@NewMovie.ReleaseDate"/>
+            <ValidationMessage For="@(() => NewMovie.ReleaseDate)"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Poster: </label>
+        <div>
+            <InputText class="form-control" @bind-Value="@NewMovie.Poster"/>
+            <ValidationMessage For="@(() => NewMovie.Poster)"/>
+        </div>
+    </div>
+
+    <button class="btn btn-success" type="submit">Save changes</button>
+</EditForm>
+
+@code {
+
+    public Movie NewMovie { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        NewMovie = new Movie();
+    }
+
+    private async Task CreateMovie(EditContext context)
+    {
+        await movieRepository.CreateMovie(httpClient, (Movie) context.Model);
+        navManager.NavigateTo("/movies");
+    }
+
+}

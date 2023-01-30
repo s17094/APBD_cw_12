@@ -1,0 +1,77 @@
+﻿@page "/movies/edit/{MovieId:int}"
+@using MovieApp.Client.Repository
+@inject NavigationManager navManager
+@inject IMovieRepository movieRepository
+@inject HttpClient httpClient
+
+<h3>Edit Movie Form</h3>
+
+<EditForm Model="@_editedMovie" OnValidSubmit="UpdateMovie">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group">
+        <label>Title: </label>
+        <div>
+            <InputText class="form-control" @bind-Value="@_editedMovie.Title" />
+            <ValidationMessage For="@(() => _editedMovie.Title)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Summary: </label>
+        <div>
+            <InputText class="form-control" @bind-Value="@_editedMovie.Summary"/>
+            <ValidationMessage For="@(() => _editedMovie.Summary)"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>In Theaters: </label>
+        <div>
+            <InputCheckbox class="form-control" @bind-Value="@_editedMovie.InTheaters"/>
+            <ValidationMessage For="@(() => _editedMovie.InTheaters)"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Trailer: </label>
+        <div>
+            <InputText class="form-control" @bind-Value="@_editedMovie.Trailer"/>
+            <ValidationMessage For="@(() => _editedMovie.Trailer)"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Release Date: </label>
+        <div>
+            <InputDate class="form-control" @bind-Value="@_editedMovie.ReleaseDate"/>
+            <ValidationMessage For="@(() => _editedMovie.ReleaseDate)"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Poster: </label>
+        <div>
+            <InputText class="form-control" @bind-Value="@_editedMovie.Poster"/>
+            <ValidationMessage For="@(() => _editedMovie.Poster)"/>
+        </div>
+    </div>
+
+    <button class="btn btn-success" type="submit">Save changes</button>
+</EditForm>
+
+@code {
+
+    [Parameter]
+    public int MovieId { get; set; }
+
+    private Movie _editedMovie = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _editedMovie = await movieRepository.GetMovie(httpClient, MovieId);
+        await base.OnInitializedAsync();
+    }
+
+    private async Task UpdateMovie()
+    {
+        await movieRepository.UpdateMovie(httpClient, MovieId, _editedMovie);
+        navManager.NavigateTo("/movies");
+    }
+
+}

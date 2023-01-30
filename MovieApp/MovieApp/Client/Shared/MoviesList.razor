@@ -1,4 +1,7 @@
-﻿@inject IJSRuntime js
+﻿@using MovieApp.Client.Repository
+@inject IJSRuntime js
+@inject IMovieRepository movieRepository
+@inject HttpClient httpClient
 
 <div class="movies-container">
     <GenericList List="Movies">
@@ -24,7 +27,8 @@
 
         if (confirmed)
         {
-            //TODO delete movie
+            await movieRepository.DeleteMovie(httpClient, movie.Id);
+            Movies = await movieRepository.GetMovies(httpClient);
         }
     }
 }

@@ -1,0 +1,85 @@
+﻿@page "/movie/{MovieId:int}/{MovieTitle}"
+@using MovieApp.Client.Repository
+@inject NavigationManager navManager
+@inject IMovieRepository movieRepository
+@inject HttpClient httpClient
+
+<h3>Movie Details</h3>
+
+<div>
+    <h4>Movie</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            Title
+        </dt>
+        <dd class = "col-sm-10">
+            @_editedMovie.Title
+        </dd>
+        <dt class = "col-sm-2">
+            Summary
+        </dt>
+        <dd class = "col-sm-10">
+            @_editedMovie.Summary
+        </dd>
+        <dt class = "col-sm-2">
+            InTheaters
+        </dt>
+        @if (_editedMovie.InTheaters)
+        {
+            <dd class = "col-sm-10">
+                Yes
+            </dd>
+        }
+        else
+        {
+            <dd class = "col-sm-10">
+                No
+            </dd>
+        }
+        <dt class = "col-sm-2">
+            Trailer
+        </dt>
+        <dd class = "col-sm-10">
+            @_editedMovie.Trailer
+        </dd>
+        <dt class="col-sm-2">
+            Release Date
+        </dt>
+        <dd class="col-sm-10">
+            @_editedMovie.ReleaseDate
+        </dd>
+        <dt class="col-sm-2">
+            Poster
+        </dt>
+        <dd class="col-sm-10">
+            @_editedMovie.Poster
+        </dd>
+    </dl>
+</div>
+<div>
+    <button class="btn btn-danger" @onclick="OnClick">Back to List</button>
+</div>
+
+@code {
+
+    [Parameter]
+    public int MovieId { get; set; }
+
+    [Parameter]
+    public string MovieTitle { get; set; }
+
+    private Movie _editedMovie = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _editedMovie = await movieRepository.GetMovie(httpClient, MovieId);
+        await base.OnInitializedAsync();
+    }
+
+    private void OnClick()
+    {
+        navManager.NavigateTo("/movies");
+    }
+
+}
